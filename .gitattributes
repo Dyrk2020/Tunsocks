@@ -1,0 +1,6 @@
+*.so binary
+*.db binary
+*.png binary
+*.webp binary
+*.jpg binary
+*.arsc binary
