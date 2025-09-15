@@ -1,0 +1,33 @@
+{
+  "log": {"level": "warn"},
+  "dns": {
+    "servers": [
+      {"type": "local", "tag": "local-dns"}
+    ],
+    "final": "local-dns",
+    "reverse_mapping": true
+  },
+  "inbounds": [{
+    "type": "tun",
+    "tag": "tun-in",
+    "address": ["172.19.0.1/30"],
+    "auto_route": true,
+    "strict_route": false,
+    "stack": "gvisor",
+    "include_package": ["com.tencent.lolm"]
+  }],
+  "outbounds": [
+    {"type": "socks", "tag": "proxy", "server": "replace-with-real-host.example", "server_port": 1080, "version": "5", "username": "replace-with-real-username", "password": "replace-with-real-password", "network": "tcp"},
+    {"type": "direct", "tag": "direct"}
+  ],
+  "route": {
+    "auto_detect_interface": true,
+    "rules": [
+      {"action": "sniff"},
+      {"port": 53, "action": "hijack-dns"},
+      {"domain": ["ipecho.net", "priv.igame.qq.com"], "outbound": "proxy"},
+      {"domain": ["lbs.map.qq.com"], "outbound": "direct"}
+    ],
+    "final": "direct"
+  }
+}
